@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import DeckPile from '../components/DeckPile.astro';
+import Rules from '../components/Rules.astro';
+import { challenges } from '../data/challenges';
+
+const randomChallenge = () => {
+  return challenges[Math.floor(Math.random() * challenges.length)];
+};
+---
+
+<Layout title="Juego de Retos - Cartas">
+  <main>
+    <h1>Juego de <span class="text-gradient">Retos</span></h1>
+    
+    <div class="game-container">
+      <div class="game-layout">
+        <DeckPile position="left" />
+        <div class="center-content">
+          <div class="card-container">
+            <Card isFlipped={false} isDrawn={false} client:load>
+              <p id="challenge-text"></p>
+            </Card>
+          </div>
+          <button id="new-card">Sacar Nueva Carta</button>
+        </div>
+        <Rules />
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { challenges } from '../data/challenges';
+  
+  let isFlipped = false;
+  let isDrawn = false;
+  const card = document.querySelector('.card');
+  const challengeText = document.querySelector('#challenge-text');
+  const newCardButton = document.querySelector('#new-card');
+
+  function getRandomChallenge() {
+    return challenges[Math.floor(Math.random() * challenges.length)];
+  }
+
+  function resetCard() {
+    isFlipped = false;
+    isDrawn = false;
+    card?.classList.remove('flipped', 'drawn');
+    
+    setTimeout(() => {
+      if (challengeText) {
+        challengeText.textContent = getRandomChallenge();
+      }
+      
+      requestAnimationFrame(() => {
+        card?.classList.add('drawn');
+        isDrawn = true;
+      });
+    }, 300);
+  }
+
+  function flipCard() {
+    if (!isFlipped && card && isDrawn) {
+      isFlipped = true;
+      card.classList.add('flipped');
+    }
+  }
+
+  card?.addEventListener('click', flipCard);
+  newCardButton?.addEventListener('click', resetCard);
+
+  // Inicializar con un reto
+  if (challengeText) {
+    challengeText.textContent = getRandomChallenge();
+  }
+</script>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1200px;
+    color: white;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+
+  .game-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .game-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .card-container {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 20px 0;
+  }
+
+  button {
+    background: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 1rem 2rem;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--accent), 0.3);
+  }
+
+  @media (max-width: 1024px) {
+    .game-layout {
+      flex-direction: column;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+    }
+  }
+</style>

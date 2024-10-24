@@ -1,0 +1,58 @@
+---
+const rules = [
+  "Si no cumples el reto, debes realizar 2 retos adicionales",
+  "Tienes 30 segundos para completar cada reto",
+  "No se permiten excusas",
+  "Los espectadores votan si el reto fue cumplido correctamente",
+  "Si fallas, tomas un shot de agua"
+];
+---
+
+<div class="rules-panel">
+  <h3>Reglas del Juego</h3>
+  <ul>
+    {rules.map(rule => (
+      <li>{rule}</li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .rules-panel {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    max-width: 300px;
+  }
+
+  h3 {
+    color: rgb(var(--accent-light));
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 0.8rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.4;
+    font-size: 0.9rem;
+  }
+
+  li::before {
+    content: "•";
+    color: rgb(var(--accent-light));
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+  }
+</style>
